@@ -38,19 +38,191 @@
     -->
     <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
 
-    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <!--<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />-->
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.css" />
     <title>Hello World</title>
 </head>
 
 <body>
-    <div class="app">
-        <h1>Hello world</h1>
-        <div id="deviceready" class="blink">
-            <p class="event listening">Connecting to Device</p>
-            <p class="event received">Device is Ready</p>
+    <div data-role="page" id="front-page">
+        <div data-role="header">
+            <h2 class="text-center mb-4">Ballot Spoiler</h2>
+        </div>
+
+        <div data-role="main" class="ui-content">
+            <a href="#scanning-page" data-role="button" id="scan">Scan QRcode</a>
+            <a href="#data-page" data-role="button">Manual input</a>
         </div>
     </div>
+    <!--/front-page-->
+
+
+
+    <div data-role="page" id="scanning-page">
+        <div data-role="header">
+            <h2 class="text-center mb-4">Ballot Spoiler</h2>
+        </div>
+
+        <div data-role="main" class="ui-content">
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <div data-role="footer" class="ui-bar">
+            <div data-role="controlgroup" data-type="horizontal">
+                <a id="scan-close" href="#front-page" data-role="button">Close</a>
+            </div>
+        </div>
+    </div>
+    <!--/scanning-page-->
+
+
+
+    <div data-role="page" id="data-page">
+        <div data-role="header">
+            <h2 class="text-center mb-4">Ballot Spoiler</h2>
+        </div>
+
+        <div data-role="main" class="ui-content">
+            <form id="decrytpion-form" onsubmit="return false;">
+                <label for="cryptogram">Cryptogram</label>
+                <textarea id="cryptogram" rows="2" style="font-family:monospace;"></textarea>
+                <label for="public-key">Public key</label>
+                <input type="text" id="public-key" style="font-family:monospace;"/>
+                <label for="randomness">Randomness</label>
+                <input type="text" id="randomness" style="font-family:monospace;"/>
+                <button type="submit">Decrypt</button>
+            </form>
+        </div>
+
+        <div id="decrypted-vote-header" data-role="header" style="display: none;">
+            <h2 class="text-center mb-4">Decrypted Vote</h2>
+        </div>
+
+        <div id="decrypted-vote-content" data-role="main" class="ui-content" style="display: none;">
+            <label for="vote-point">Vote point</label>
+            <input type="text" id="vote-point" readonly="true" style="font-family:monospace;"/>
+
+            <div id="decrypted-success" data-role="content" data-theme="a" style="display: none;">
+                <strong>Success!</strong> Your vote has been decoded.
+            </div>
+
+            <div id="decrypted-error" data-role="content" data-theme="b" style="display: none;">
+                <strong>Error!</strong> Your vote has a wrong encoding.
+            </div>
+
+            <div id="vote-text" data-role="content" data-theme="a" style="display: none;">
+                <label for="vote-text">Vote</label>
+                <h3><span id="vote-text-span"></span></h3>
+            </div>
+
+            <div id="vote-ids" data-role="content" data-theme="a" style="display: none;">
+                <label for="vote-ids">Vote</label>
+                <ul id="vote-ids-list"></ul>
+            </div>
+        </div>
+
+        <div data-role="footer" class="ui-bar">
+            <div data-role="controlgroup" data-type="horizontal">
+                <a href="#front-page" data-role="button">Back</a>
+                <a href="#scanning-page" data-role="button" id="rescan">Rescan</a>
+            </div>
+        </div>
+    </div>
+    <!--/data-page-->
+
+
+
+
+    <!--<div data-role="page" id="scan-page">-->
+        <!--<div data-role="main" class="ui-content">-->
+            <!--<div class="container py-5">-->
+                <!--<div class="row">-->
+                    <!--<div class="col mx-auto">-->
+                        <!--<h2 class="text-center mb-4">Ballot Spoiler application</h2>-->
+
+                        <!--<div class="row justify-content-md-center">-->
+                            <!--<canvas id="canvas"></canvas>-->
+                        <!--</div>-->
+
+                        <!--<div class="row">-->
+                            <!--<div id="input-data" class="col-lg-7 col-md-11 mx-auto" style="display: none;">-->
+                                <!--&lt;!&ndash; form card input data &ndash;&gt;-->
+                                <!--<div class="card rounded-0">-->
+                                    <!--<div class="card-header">-->
+                                        <!--<h3 class="mb-0">Input Data</h3>-->
+                                    <!--</div>-->
+                                    <!--<div class="card-body">-->
+                                        <!--<form class="form" role="form" id="decrytpion-form" onsubmit="return false;">-->
+                                            <!--<div class="form-group">-->
+                                                <!--<label for="cryptogram">Cryptogram</label>-->
+                                                <!--<textarea class="form-control form-control-sm rounded-0 text-monospace" id="cryptogram" rows="2"></textarea>-->
+                                            <!--</div>-->
+                                            <!--<div class="form-group">-->
+                                                <!--<label for="public-key">Public key</label>-->
+                                                <!--<input type="text" class="form-control form-control-sm rounded-0 text-monospace" id="public-key"/>-->
+                                            <!--</div>-->
+                                            <!--<div class="form-group">-->
+                                                <!--<label for="randomness">Randomness</label>-->
+                                                <!--<input type="text" class="form-control form-control-sm rounded-0 text-monospace" id="randomness"/>-->
+                                            <!--</div>-->
+                                            <!--<button id="scan" type="button" class="btn btn-primary">Scan</button>-->
+                                            <!--<button type="submit" class="btn btn-success btn-lg float-right">Decrypt</button>-->
+                                        <!--</form>-->
+                                    <!--</div>-->
+                                    <!--&lt;!&ndash;/card-block&ndash;&gt;-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash; /form card input data &ndash;&gt;-->
+                            <!--</div>-->
+                        <!--</div>-->
+
+                        <!--<div class="row">-->
+                            <!--<div id="vote-data" class="col-lg-7 col-md-11 mx-auto" style="display: none;">-->
+                                <!--&lt;!&ndash; form card vote data &ndash;&gt;-->
+                                <!--<div class="card rounded-0">-->
+                                    <!--<div class="card-header">-->
+                                        <!--<h3 class="mb-0">Vote Data</h3>-->
+                                    <!--</div>-->
+                                    <!--<div class="card-body">-->
+                                        <!--<label for="vote">Vote</label>-->
+                                        <!--<input type="text" class="form-control form-control-sm rounded-0 text-monospace" id="vote" readonly="true"/>-->
+                                    <!--</div>-->
+                                    <!--<div id="vote-success" class="alert alert-success" role="alert">-->
+                                        <!--<strong>Success!</strong> Your vote has been decoded.-->
+                                    <!--</div>-->
+                                    <!--<div id="vote-error" class="alert alert-danger" role="alert">-->
+                                        <!--<strong>Error!</strong> Your vote has a wrong encoding.-->
+                                    <!--</div>-->
+                                    <!--<div id="vote-text" class="card-body">-->
+                                        <!--<label for="vote-text">Vote</label>-->
+                                        <!--<h3><span id="vote-text-span" class="badge badge-light"></span></h3>-->
+                                    <!--</div>-->
+                                    <!--<div id="vote-ids" class="card-body row">-->
+                                        <!--<label class="col-2" for="vote-ids">Vote</label>-->
+                                        <!--<ul id="vote-ids-list" class="list-group col-2"></ul>-->
+                                    <!--</div>-->
+                                    <!--&lt;!&ndash;/card-block&ndash;&gt;-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash; /form card input data &ndash;&gt;-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--&lt;!&ndash;/row&ndash;&gt;-->
+                    <!--</div>-->
+                    <!--&lt;!&ndash;/col&ndash;&gt;-->
+                <!--</div>-->
+                <!--&lt;!&ndash;/row&ndash;&gt;-->
+            <!--</div>-->
+            <!--/container-->
+        <!--</div>-->
+    <!--</div>-->
+
+
+    <script type="text/javascript" src="js/jquery-2.2.4.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
     <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/jsQR.js"></script>
+    <script type="text/javascript" src="js/sjcl.js"></script>
+    <script type="text/javascript" src="js/crypto.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
     <script type="text/javascript">
         app.initialize();
