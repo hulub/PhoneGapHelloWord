@@ -22,12 +22,12 @@
 <html>
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="msapplication-tap-highlight" content="no" />
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <meta charset="utf-8"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="msapplication-tap-highlight" content="no"/>
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width"/>
     <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
-    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *"/>
     <!-- Good default declaration:
     * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
     * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
@@ -38,22 +38,106 @@
     -->
     <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
 
-    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.css"/>
     <title>Hello World</title>
 </head>
 
 <body>
-    <div class="app">
-        <h1>Hello world</h1>
-        <div id="deviceready" class="blink">
-            <p class="event listening">Connecting to Device</p>
-            <p class="event received">Device is Ready</p>
+    <div data-role="page" id="front-page">
+        <div data-role="header">
+            <h2 class="text-center mb-4">Ballot Spoiler</h2>
+        </div>
+
+        <div data-role="main" class="ui-content">
+            <a href="#scanning-page" data-role="button" id="scan">Scan QRcode</a>
+            <a href="#data-page" data-role="button">Manual input</a>
         </div>
     </div>
+    <!--/front-page-->
+
+
+    <div data-role="page" id="scanning-page">
+        <div data-role="header">
+            <h2 class="text-center mb-4">Ballot Spoiler</h2>
+        </div>
+
+        <div data-role="main" class="ui-content">
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <div data-role="footer" class="ui-bar">
+            <div data-role="controlgroup" data-type="horizontal">
+                <a id="scan-close" href="#front-page" data-role="button">Close</a>
+            </div>
+        </div>
+    </div>
+    <!--/scanning-page-->
+
+
+    <div data-role="page" id="data-page">
+        <div data-role="header">
+            <h2 class="text-center mb-4">Ballot Spoiler</h2>
+        </div>
+
+        <div data-role="main" class="ui-content">
+            <form id="decrytpion-form" onsubmit="return false;">
+                <label for="cryptogram">Cryptogram</label>
+                <textarea id="cryptogram" rows="2" style="font-family:monospace;"></textarea>
+                <label for="public-key">Public key</label>
+                <input type="text" id="public-key" style="font-family:monospace;"/>
+                <label for="randomness">Randomness</label>
+                <input type="text" id="randomness" style="font-family:monospace;"/>
+                <button type="submit">Decrypt</button>
+            </form>
+        </div>
+
+        <div id="decrypted-vote-header" data-role="header" style="display: none;">
+            <h2 class="text-center mb-4">Decrypted Vote</h2>
+        </div>
+
+        <div id="decrypted-vote-content" data-role="main" class="ui-content" style="display: none;">
+            <label for="vote-point">Vote point</label>
+            <input type="text" id="vote-point" readonly="true" style="font-family:monospace;"/>
+
+            <div id="decrypted-success" data-role="content" data-theme="a" style="display: none;">
+                <strong>Success!</strong> Your vote has been decoded.
+            </div>
+
+            <div id="decrypted-error" data-role="content" data-theme="b" style="display: none;">
+                <strong>Error!</strong> Your vote has a wrong encoding.
+            </div>
+
+            <div id="vote-text" data-role="content" data-theme="a" style="display: none;">
+                <label for="vote-text">Vote</label>
+                <h3><span id="vote-text-span"></span></h3>
+            </div>
+
+            <div id="vote-ids" data-role="content" data-theme="a" style="display: none;">
+                <label for="vote-ids">Vote</label>
+                <ul id="vote-ids-list"></ul>
+            </div>
+        </div>
+
+        <div data-role="footer" class="ui-bar">
+            <div data-role="controlgroup" data-type="horizontal">
+                <a href="#front-page" data-role="button">Back</a>
+                <a href="#scanning-page" data-role="button" id="rescan">Rescan</a>
+            </div>
+        </div>
+    </div>
+    <!--/data-page-->
+
+
+    <script type="text/javascript" src="js/jquery-2.2.4.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
     <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/jsQR.js"></script>
+    <script type="text/javascript" src="js/sjcl.js"></script>
+    <script type="text/javascript" src="js/crypto.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
     <script type="text/javascript">
-        app.initialize();
+      app.initialize();
     </script>
 </body>
 
